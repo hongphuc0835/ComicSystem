@@ -1,21 +1,27 @@
+using ComicSys.Data;
 using Microsoft.EntityFrameworkCore;
-using ComicSystem.Models;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseMySql(
-        builder.Configuration.GetConnectionString("DefaultConnection"),
-        new MySqlServerVersion(new Version(8, 0, 21)) // Điều chỉnh theo phiên bản MySQL của bạn
-    ));
-
+// Add services to the container.
 builder.Services.AddControllersWithViews();
+
+builder.Services.AddDbContext<ComicSystemContext>(options =>
+    options.UseMySql(
+        builder.Configuration.GetConnectionString("ComicSystemContext"),
+        new MySqlServerVersion(new Version(8, 0, 30))  // Replace with your MySQL version
+    )
+);
+
 
 var app = builder.Build();
 
+// Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
+    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
 

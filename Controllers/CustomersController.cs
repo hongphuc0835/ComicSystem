@@ -1,14 +1,15 @@
+using ComicSys.Data;
+using ComicSys.Models;
 using Microsoft.AspNetCore.Mvc;
-using ComicSystem.Models;
-using Microsoft.EntityFrameworkCore; 
+using System.Threading.Tasks;
 
-namespace ComicSystem.Controllers
+namespace ComicSys.Controllers
 {
     public class CustomersController : Controller
     {
-        private readonly ApplicationDbContext _context;
+        private readonly ComicSystemContext _context;
 
-        public CustomersController(ApplicationDbContext context)
+        public CustomersController(ComicSystemContext context)
         {
             _context = context;
         }
@@ -22,38 +23,15 @@ namespace ComicSystem.Controllers
         // POST: Customers/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,FullName,PhoneNumber,RegisterDate")] Customer customer)
+        public async Task<IActionResult> Create([Bind("FullName,PhoneNumber")] Customer customer)
         {
             if (ModelState.IsValid)
             {
+                customer.RegistrationDate = DateTime.Now; // Set ngày đăng ký hiện tại
                 _context.Add(customer);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction("Index", "Home"); // Điều hướng đến trang chủ hoặc trang khác sau khi đăng ký
             }
-            return View(customer);
-        }
-
-        // GET: Customers/Index
-        public async Task<IActionResult> Index()
-        {
-            return View(await _context.Customers.ToListAsync());
-        }
-
-        // GET: Customers/Details/5
-        public async Task<IActionResult> Details(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var customer = await _context.Customers
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (customer == null)
-            {
-                return NotFound();
-            }
-
             return View(customer);
         }
     }

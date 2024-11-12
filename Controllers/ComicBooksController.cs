@@ -1,14 +1,17 @@
+using ComicSys.Data;
+using ComicSys.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using ComicSystem.Models;
+using System.Threading.Tasks;
+using System.Linq;
 
-namespace ComicSystem.Controllers
+namespace ComicSys.Controllers
 {
     public class ComicBooksController : Controller
     {
-        private readonly ApplicationDbContext _context;
+        private readonly ComicSystemContext _context;
 
-        public ComicBooksController(ApplicationDbContext context)
+        public ComicBooksController(ComicSystemContext context)
         {
             _context = context;
         }
@@ -23,16 +26,11 @@ namespace ComicSystem.Controllers
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
-            {
                 return NotFound();
-            }
 
-            var comicBook = await _context.ComicBooks
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var comicBook = await _context.ComicBooks.FindAsync(id);
             if (comicBook == null)
-            {
                 return NotFound();
-            }
 
             return View(comicBook);
         }
@@ -46,7 +44,7 @@ namespace ComicSystem.Controllers
         // POST: ComicBooks/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Title,Description,PricePerDay,StockQuantity,IsAvailable,DateAdded")] ComicBook comicBook)
+        public async Task<IActionResult> Create([Bind("Title,Author,PricePerDay")] ComicBook comicBook)
         {
             if (ModelState.IsValid)
             {
@@ -61,27 +59,22 @@ namespace ComicSystem.Controllers
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
-            {
                 return NotFound();
-            }
 
             var comicBook = await _context.ComicBooks.FindAsync(id);
             if (comicBook == null)
-            {
                 return NotFound();
-            }
+
             return View(comicBook);
         }
 
         // POST: ComicBooks/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Title,Description,PricePerDay,StockQuantity,IsAvailable,DateAdded")] ComicBook comicBook)
+        public async Task<IActionResult> Edit(int id, [Bind("ComicBookID,Title,Author,PricePerDay")] ComicBook comicBook)
         {
-            if (id != comicBook.Id)
-            {
+            if (id != comicBook.ComicBookID)
                 return NotFound();
-            }
 
             if (ModelState.IsValid)
             {
@@ -92,14 +85,10 @@ namespace ComicSystem.Controllers
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!ComicBookExists(comicBook.Id))
-                    {
+                    if (!ComicBookExists(comicBook.ComicBookID))
                         return NotFound();
-                    }
                     else
-                    {
                         throw;
-                    }
                 }
                 return RedirectToAction(nameof(Index));
             }
@@ -110,16 +99,12 @@ namespace ComicSystem.Controllers
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
-            {
                 return NotFound();
-            }
 
             var comicBook = await _context.ComicBooks
-                .FirstOrDefaultAsync(m => m.Id == id);
+                .FirstOrDefaultAsync(m => m.ComicBookID == id);
             if (comicBook == null)
-            {
                 return NotFound();
-            }
 
             return View(comicBook);
         }
@@ -137,7 +122,7 @@ namespace ComicSystem.Controllers
 
         private bool ComicBookExists(int id)
         {
-            return _context.ComicBooks.Any(e => e.Id == id);
+            return _context.ComicBooks.Any(e => e.ComicBookID == id);
         }
     }
 }

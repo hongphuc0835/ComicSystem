@@ -1,28 +1,14 @@
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-
-namespace ComicSystem.Models
+namespace ComicSys.Models
 {
     public class RentalDetail
     {
-        public int Id { get; set; } // Khóa chính
+        public int RentalDetailID { get; set; }
+        public int RentalID { get; set; }
+        public int ComicBookID { get; set; }
+        public int Quantity { get; set; }
+        public decimal PricePerDay { get; set; }
 
-        [Required]
-        public int RentalId { get; set; } // Khóa ngoại từ bảng Rentals
-
-        [Required]
-        public int ComicBookId { get; set; } // Khóa ngoại từ bảng ComicBooks
-
-        [Required]
-        public int Quantity { get; set; } // Số lượng sách được thuê
-
-        [Required]
-        public decimal PricePerDay { get; set; } // Giá thuê mỗi ngày
-
-        // Thiết lập quan hệ với bảng Rentals
         public Rental Rental { get; set; }
-
-        // Thiết lập quan hệ với bảng ComicBooks
         public ComicBook ComicBook { get; set; }
     }
 }

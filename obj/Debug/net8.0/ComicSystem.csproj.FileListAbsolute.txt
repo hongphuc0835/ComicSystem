@@ -150,3 +150,5 @@ D:\aspNET\ComicSystem\obj\Debug\net8.0\ComicSystem.genruntimeconfig.cache
 D:\aspNET\ComicSystem\obj\Debug\net8.0\ref\ComicSystem.dll
 D:\aspNET\ComicSystem\bin\Debug\net8.0\MySqlConnector.dll
 D:\aspNET\ComicSystem\bin\Debug\net8.0\Pomelo.EntityFrameworkCore.MySql.dll
+D:\aspNET\ComicSystem\obj\Debug\net8.0\ComicSystem.sourcelink.json
+D:\aspNET\ComicSystem\obj\Debug\net8.0\scopedcss\Views\Shared\_Layout.cshtml.rz.scp.css

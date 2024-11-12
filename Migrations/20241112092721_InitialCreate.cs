@@ -19,22 +19,17 @@ namespace ComicSystem.Migrations
                 name: "ComicBooks",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
+                    ComicBookID = table.Column<int>(type: "int", nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    Title = table.Column<string>(type: "varchar(100)", maxLength: 100, nullable: false)
+                    Title = table.Column<string>(type: "longtext", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    Description = table.Column<string>(type: "varchar(500)", maxLength: 500, nullable: false)
+                    Author = table.Column<string>(type: "longtext", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    PricePerDay = table.Column<decimal>(type: "decimal(65,30)", nullable: false),
-                    StockQuantity = table.Column<int>(type: "int", nullable: false),
-                    IsAvailable = table.Column<bool>(type: "tinyint(1)", nullable: false),
-                    DateAdded = table.Column<DateTime>(type: "datetime(6)", nullable: false),
-                    Author = table.Column<string>(type: "varchar(100)", maxLength: 100, nullable: false)
-                        .Annotation("MySql:CharSet", "utf8mb4")
+                    PricePerDay = table.Column<decimal>(type: "decimal(65,30)", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ComicBooks", x => x.Id);
+                    table.PrimaryKey("PK_ComicBooks", x => x.ComicBookID);
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
 
@@ -42,17 +37,17 @@ namespace ComicSystem.Migrations
                 name: "Customers",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
+                    CustomerID = table.Column<int>(type: "int", nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    FullName = table.Column<string>(type: "varchar(100)", maxLength: 100, nullable: false)
+                    FullName = table.Column<string>(type: "longtext", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     PhoneNumber = table.Column<string>(type: "longtext", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    RegisterDate = table.Column<DateTime>(type: "datetime(6)", nullable: false)
+                    RegistrationDate = table.Column<DateTime>(type: "datetime(6)", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Customers", x => x.Id);
+                    table.PrimaryKey("PK_Customers", x => x.CustomerID);
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
 
@@ -60,22 +55,22 @@ namespace ComicSystem.Migrations
                 name: "Rentals",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
+                    RentalID = table.Column<int>(type: "int", nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    CustomerID = table.Column<int>(type: "int", nullable: false),
                     RentalDate = table.Column<DateTime>(type: "datetime(6)", nullable: false),
-                    ReturnDate = table.Column<DateTime>(type: "datetime(6)", nullable: false),
-                    CustomerId = table.Column<int>(type: "int", nullable: false),
-                    Status = table.Column<string>(type: "varchar(20)", maxLength: 20, nullable: false)
+                    ReturnDate = table.Column<DateTime>(type: "datetime(6)", nullable: true),
+                    Status = table.Column<string>(type: "longtext", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4")
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Rentals", x => x.Id);
+                    table.PrimaryKey("PK_Rentals", x => x.RentalID);
                     table.ForeignKey(
-                        name: "FK_Rentals_Customers_CustomerId",
-                        column: x => x.CustomerId,
+                        name: "FK_Rentals_Customers_CustomerID",
+                        column: x => x.CustomerID,
                         principalTable: "Customers",
-                        principalColumn: "Id",
+                        principalColumn: "CustomerID",
                         onDelete: ReferentialAction.Cascade);
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
@@ -84,45 +79,45 @@ namespace ComicSystem.Migrations
                 name: "RentalDetails",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
+                    RentalDetailID = table.Column<int>(type: "int", nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    RentalId = table.Column<int>(type: "int", nullable: false),
-                    ComicBookId = table.Column<int>(type: "int", nullable: false),
+                    RentalID = table.Column<int>(type: "int", nullable: false),
+                    ComicBookID = table.Column<int>(type: "int", nullable: false),
                     Quantity = table.Column<int>(type: "int", nullable: false),
                     PricePerDay = table.Column<decimal>(type: "decimal(65,30)", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_RentalDetails", x => x.Id);
+                    table.PrimaryKey("PK_RentalDetails", x => x.RentalDetailID);
                     table.ForeignKey(
-                        name: "FK_RentalDetails_ComicBooks_ComicBookId",
-                        column: x => x.ComicBookId,
+                        name: "FK_RentalDetails_ComicBooks_ComicBookID",
+                        column: x => x.ComicBookID,
                         principalTable: "ComicBooks",
-                        principalColumn: "Id",
+                        principalColumn: "ComicBookID",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_RentalDetails_Rentals_RentalId",
-                        column: x => x.RentalId,
+                        name: "FK_RentalDetails_Rentals_RentalID",
+                        column: x => x.RentalID,
                         principalTable: "Rentals",
-                        principalColumn: "Id",
+                        principalColumn: "RentalID",
                         onDelete: ReferentialAction.Cascade);
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateIndex(
-                name: "IX_RentalDetails_ComicBookId",
+                name: "IX_RentalDetails_ComicBookID",
                 table: "RentalDetails",
-                column: "ComicBookId");
+                column: "ComicBookID");
 
             migrationBuilder.CreateIndex(
-                name: "IX_RentalDetails_RentalId",
+                name: "IX_RentalDetails_RentalID",
                 table: "RentalDetails",
-                column: "RentalId");
+                column: "RentalID");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Rentals_CustomerId",
+                name: "IX_Rentals_CustomerID",
                 table: "Rentals",
-                column: "CustomerId");
+                column: "CustomerID");
         }
 
         /// <inheritdoc />
